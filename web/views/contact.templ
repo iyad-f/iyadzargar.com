@@ -1,0 +1,104 @@
+// SPDX-FileCopyrightText: 2026 Iyad
+// SPDX-License-Identifier: Apache-2.0
+
+package views
+
+import "github.com/iyad-f/iyadf.com/internal/content"
+
+templ Contact(site content.Site, status string) {
+	@Base(site.Owner, "Contact", "contact") {
+		@pageShell(true) {
+			@eyebrow("Up for a good problem")
+			<h1 class="mt-6 max-w-3xl font-mono text-3xl font-bold tracking-tight text-ink sm:text-5xl">
+				Let's work together.
+			</h1>
+			<p class="mt-5 max-w-2xl text-lg leading-relaxed text-ink/80">
+				Have a project in mind? I'd love to hear about it. Send me a message and let's create something extraordinary.
+			</p>
+			<div class="mt-16 grid gap-12 lg:grid-cols-2">
+				<div id="send">
+					<h2 class="font-mono text-lg font-bold text-ink">Send a message</h2>
+					{{ notice := StatusNotice(status) }}
+					if notice.Kind != "" {
+						<div id="form-status" role="status" aria-live="polite" class={ "mt-6 rounded-md border px-4 py-3 font-mono text-sm", bannerClass(notice.Kind) }>
+							{ notice.Text }
+						</div>
+					}
+					<form
+						id="contact-form"
+						method="post"
+						action="/contact"
+						hx-post="/contact"
+						hx-swap="none"
+						hx-disabled-elt="find button"
+						class="mt-6 space-y-5"
+					>
+						<div>
+							<label for="name" class="font-mono text-xs uppercase tracking-wider text-muted">Name</label>
+							<input
+								id="name"
+								name="name"
+								type="text"
+								required
+								placeholder="Your name"
+								class="mt-2 w-full rounded-md border border-line bg-fill-subtle px-4 py-2.5 text-ink outline-none transition-colors placeholder:text-muted/60 focus-visible:border-signal"
+							/>
+						</div>
+						<div>
+							<label for="email" class="font-mono text-xs uppercase tracking-wider text-muted">Email</label>
+							<input
+								id="email"
+								name="email"
+								type="email"
+								required
+								placeholder="you@example.com"
+								class="mt-2 w-full rounded-md border border-line bg-fill-subtle px-4 py-2.5 text-ink outline-none transition-colors placeholder:text-muted/60 focus-visible:border-signal"
+							/>
+						</div>
+						<div>
+							<label for="subject" class="font-mono text-xs uppercase tracking-wider text-muted">Subject</label>
+							<input
+								id="subject"
+								name="subject"
+								type="text"
+								required
+								placeholder="Project collaboration"
+								class="mt-2 w-full rounded-md border border-line bg-fill-subtle px-4 py-2.5 text-ink outline-none transition-colors placeholder:text-muted/60 focus-visible:border-signal"
+							/>
+						</div>
+						<div>
+							<label for="message" class="font-mono text-xs uppercase tracking-wider text-muted">Message</label>
+							<textarea
+								id="message"
+								name="message"
+								rows="5"
+								required
+								placeholder="Tell me about your project..."
+								class="mt-2 w-full resize-none rounded-md border border-line bg-fill-subtle px-4 py-2.5 text-ink outline-none transition-colors placeholder:text-muted/60 focus-visible:border-signal"
+							></textarea>
+						</div>
+						<div class="hidden" aria-hidden="true">
+							<label for="company">Company</label>
+							<input id="company" name="company" type="text" tabindex="-1" autocomplete="off"/>
+						</div>
+						@button(btnPrimary, "") {
+							<svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+								<path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"></path>
+								<path d="m21.854 2.147-10.94 10.939"></path>
+							</svg>
+							Send message
+						}
+					</form>
+				</div>
+				<div>
+					<h2 class="font-mono text-lg font-bold text-ink">Contact information</h2>
+					<div class="mt-6 space-y-4">
+						@contactRow("Email", site.Owner.Email, site.Owner.MailtoURL())
+						@contactRow("GitHub", site.Owner.GitHubLabel(), site.Owner.GitHubURL())
+						@contactRow("Location", site.Owner.Location, "")
+					</div>
+				</div>
+			</div>
+		}
+	}
+}

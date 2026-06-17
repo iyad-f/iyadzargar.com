@@ -1,0 +1,137 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Iyad
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --spacing-nav: 5rem;
+
+  --tracking-eyebrow: 0.25em;
+  --tracking-label: 0.2em;
+}
+
+:root {
+  --surface: #f4efe4;
+  --ink: #1a1612;
+  --muted: #6f665a;
+  --signal: #b45309;
+  --line: #e6ddcd;
+  --grid-dot: #d9cdb6;
+  --term-glow: color-mix(in oklab, var(--signal) 50%, transparent);
+  --fill-subtle: color-mix(in oklab, var(--ink) 2%, transparent);
+  --fill: color-mix(in oklab, var(--ink) 3%, transparent);
+  --fill-strong: color-mix(in oklab, var(--ink) 5%, transparent);
+  --footer-bg: #14110d;
+
+  /* dark UI surfaces, same in both themes */
+  --footer-fg: #9a907e;
+  --footer-heading: #ece6da;
+  --footer-line: #2b2620;
+
+  --term-bg: #100d09;
+  --term-fg: #ece6da;
+  --term-text: #8c8474;
+  --term-dim: #6f665a;
+  --term-line: #2b2620;
+  --term-accent: #e8a23c;
+  --term-ok: #27c93f;
+  --term-warn: #ffbd2e;
+  --term-danger: #ff5f56;
+  --term-scroll: #3a342b;
+
+  /* language brand colors */
+  --lang-go: #00add8;
+  --lang-rust: #ce422b;
+  --lang-python: #4b8bbe;
+  --lang-js: #f0db4f;
+}
+
+.dark {
+  --surface: #14110d;
+  --ink: #ece6da;
+  --muted: #8c8474;
+  --signal: #e8a23c;
+  --line: #2b2620;
+  --grid-dot: #2b2620;
+  --term-glow: color-mix(in oklab, var(--signal) 15%, transparent);
+  --footer-bg: #1e1a14;
+}
+
+@theme inline {
+  --color-surface: var(--surface);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-signal: var(--signal);
+  --color-line: var(--line);
+  --color-fill-subtle: var(--fill-subtle);
+  --color-fill: var(--fill);
+  --color-fill-strong: var(--fill-strong);
+  --color-footer: var(--footer-bg);
+
+  --color-footer-fg: var(--footer-fg);
+  --color-footer-heading: var(--footer-heading);
+  --color-footer-line: var(--footer-line);
+
+  --color-term-bg: var(--term-bg);
+  --color-term-fg: var(--term-fg);
+  --color-term-text: var(--term-text);
+  --color-term-dim: var(--term-dim);
+  --color-term-line: var(--term-line);
+  --color-term-accent: var(--term-accent);
+  --color-term-ok: var(--term-ok);
+  --color-term-warn: var(--term-warn);
+  --color-term-danger: var(--term-danger);
+  --color-term-glow: var(--term-glow);
+
+  --color-lang-go: var(--lang-go);
+  --color-lang-rust: var(--lang-rust);
+  --color-lang-python: var(--lang-python);
+  --color-lang-js: var(--lang-js);
+
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Space Mono", ui-monospace, monospace;
+}
+
+.caret {
+  color: var(--signal);
+  font-weight: 400;
+  animation: caret 1s step-end infinite;
+}
+
+@keyframes caret {
+  50% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .caret {
+    animation: none;
+  }
+}
+
+.term-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--term-scroll) transparent;
+}
+.term-scroll::-webkit-scrollbar {
+  width: 8px;
+}
+.term-scroll::-webkit-scrollbar-thumb {
+  background: var(--term-scroll);
+  border-radius: 4px;
+}
+.term-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.dot-grid {
+  background-image: radial-gradient(var(--grid-dot) 1.25px, transparent 1.25px);
+  background-size: 22px 22px;
+  -webkit-mask-image: radial-gradient(ellipse 75% 60% at 50% 45%, #000 35%, transparent 100%);
+  mask-image: radial-gradient(ellipse 75% 60% at 50% 45%, #000 35%, transparent 100%);
+}

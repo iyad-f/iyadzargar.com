@@ -1,0 +1,14 @@
+# SPDX-FileCopyrightText: 2026 Iyad
+# SPDX-License-Identifier: Apache-2.0
+
+version = 1
+
+[[annotations]]
+path = ["go.mod", "go.sum"]
+SPDX-FileCopyrightText = "2026 Iyad"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "web/static/js/htmx.min.js"
+SPDX-FileCopyrightText = "Big Sky Software"
+SPDX-License-Identifier = "0BSD"

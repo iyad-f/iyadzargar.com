@@ -1,0 +1,119 @@
+# SPDX-FileCopyrightText: 2026 Iyad
+# SPDX-License-Identifier: Apache-2.0
+
+name: deploy
+
+on:
+  push:
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+"
+
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+env:
+  IMAGE: ghcr.io/iyad-f/iyadf.com
+  TAILWIND_VERSION: v4.3.1
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    outputs:
+      tag: ${{ steps.meta.outputs.tag }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+
+      - name: Generate templ components
+        run: go tool templ generate
+
+      - name: Build CSS
+        run: |
+          curl -sSLo tailwindcss "https://github.com/tailwindlabs/tailwindcss/releases/download/${TAILWIND_VERSION}/tailwindcss-linux-x64"
+          chmod +x tailwindcss
+          ./tailwindcss -i web/static/css/input.css -o web/static/css/styles.css --minify
+
+      - name: Resolve image tag
+        id: meta
+        # The release version without the leading v (v1.2.3 -> 1.2.3).
+        run: echo "tag=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ env.IMAGE }}:${{ steps.meta.outputs.tag }}
+            ${{ env.IMAGE }}:latest
+
+      - name: Build and push custom Caddy
+        uses: docker/build-push-action@v6
+        with:
+          context: ./caddy
+          push: true
+          tags: |
+            ${{ env.IMAGE }}-caddy:${{ steps.meta.outputs.tag }}
+            ${{ env.IMAGE }}-caddy:latest
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Copy compose config to the server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          source: "compose.yaml,caddy/Caddyfile"
+          target: /srv/iyadf.com
+
+      - name: Deploy over SSH
+        uses: appleboy/ssh-action@v1
+        env:
+          IMAGE_TAG: ${{ needs.build.outputs.tag }}
+          HOST: ${{ vars.HOST }}
+          PORT: ${{ vars.PORT }}
+          SMTP_HOST: ${{ vars.SMTP_HOST }}
+          SMTP_PORT: ${{ vars.SMTP_PORT }}
+          SMTP_USER: ${{ vars.SMTP_USER }}
+          CONTACT_TO: ${{ vars.CONTACT_TO }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          envs: IMAGE_TAG,HOST,PORT,SMTP_HOST,SMTP_PORT,SMTP_USER,CONTACT_TO,SMTP_PASS
+          script: |
+            set -e
+            cd /srv/iyadf.com
+            umask 077
+            cat > .env <<EOF
+            HOST=${HOST}
+            PORT=${PORT}
+            IMAGE_TAG=${IMAGE_TAG}
+            SMTP_HOST=${SMTP_HOST}
+            SMTP_PORT=${SMTP_PORT}
+            SMTP_USER=${SMTP_USER}
+            SMTP_PASS=${SMTP_PASS}
+            CONTACT_TO=${CONTACT_TO}
+            EOF
+            docker compose pull
+            docker compose up -d --remove-orphans

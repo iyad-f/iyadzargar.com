@@ -1,0 +1,88 @@
+# SPDX-FileCopyrightText: 2026 Iyad
+# SPDX-License-Identifier: Apache-2.0
+
+[owner]
+name = "Iyad Farooq"
+email = "iyad@iyadf.com"
+github_username = "iyad-f"
+location = "Bengaluru, India"
+
+[about]
+bio = [
+  "I have been programming for the better part of a decade. The first couple of years were on and off, but it has been steady ever since. What I fell for was not a language or a framework. It was computer science itself, the whole of it.",
+  "What pulls me hardest is the layer underneath. I want to know how a programming language turns your file into something that runs, what a database does beneath a query, how bytes move once they leave a socket. From network programming to resilient systems, cryptography to compiler internals, I stay curious and pragmatic with it. I do not know everything. I just cannot stop wanting to find out.",
+]
+
+[[about.skills]]
+category = "Languages"
+items = ["Go", "Python", "Rust", "JavaScript"]
+
+[[about.skills]]
+category = "System Design"
+items = ["High Availability", "Microservices", "Caching", "CAP/PACELC", "API Design", "Serverless", "CDN"]
+
+[[about.skills]]
+category = "Cloud / Infra"
+items = ["Docker", "AWS", "Hetzner", "Hostinger"]
+
+[[about.skills]]
+category = "CI/CD"
+items = ["Jenkins", "GitHub Actions", "GitLab CI/CD"]
+
+[[about.skills]]
+category = "Databases"
+items = ["PostgreSQL", "MySQL", "SQLite", "Cassandra", "ScyllaDB", "Redis", "Valkey", "MongoDB"]
+
+[[projects]]
+name = "rkv"
+desc = "Redis compatible in memory store speaking RESP2 over a single threaded epoll/kqueue reactor via raw libc FFI. No Tokio. Runs unmodified against redis-cli and redis-benchmark."
+lang = "Rust"
+tags = ["Event loops", "I/O Multiplexing", "epoll", "kqueue", "RESP2", "libc FFI"]
+url = "https://github.com/iyad-f/rkv"
+link_label = "Source"
+featured = true
+
+[[projects]]
+name = "bolt"
+desc = "HTTP/1.1 server on raw TCP sockets, zero net/http. Request parsing, chunked transfer, keep alive, TLS, graceful shutdown, and a chainable middleware system."
+lang = "Go"
+tags = ["TCP", "HTTP/1.1", "TLS"]
+url = "https://github.com/iyad-f/bolt"
+link_label = "Source"
+featured = true
+
+[[projects]]
+name = "sonyflake"
+desc = "Distributed, Snowflake inspired unique ID generator built for high throughput, low latency concurrent ID generation across threads."
+lang = "Python"
+tags = ["Distributed systems", "Concurrency", "Threading"]
+url = "https://github.com/iyad-f/sonyflake"
+link_label = "Source"
+featured = false
+
+[[projects]]
+name = "Meko"
+desc = "Multipurpose Discord bot serving 6,300+ servers and 15K+ active users. PostgreSQL backed, with 161 commands and 340K+ commands run."
+lang = "Python"
+tags = ["discord.py", "PostgreSQL"]
+url = "https://discord.com/oauth2/authorize?client_id=1168296808741613598&scope=bot"
+link_label = "Add to server"
+featured = false
+
+[[projects]]
+name = "Litestar Backend Template"
+desc = "Production ready Litestar API template with token auth, role based access control, rate limiting, and PostgreSQL migrations, containerized with multi stage Docker."
+lang = "Python"
+tags = ["Litestar", "PostgreSQL", "Redis", "Docker"]
+url = "https://github.com/iyad-f/litestar-backend-template"
+link_label = "Source"
+featured = false
+
+[[projects]]
+name = "iyadf.com"
+desc = "The very site you are reading."
+lang = "Go"
+tags = ["templ", "htmx", "Tailwind", "Caddy", "Distroless"]
+url = "https://github.com/iyad-f/iyadf.com"
+link_label = "Source"
+featured = false

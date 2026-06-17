@@ -1,0 +1,192 @@
+// SPDX-FileCopyrightText: 2026 Iyad
+// SPDX-License-Identifier: Apache-2.0
+
+package views
+
+import (
+	"strings"
+
+	"github.com/iyad-f/iyadf.com/internal/content"
+)
+
+templ Base(o content.Owner, section, current string) {
+	<!DOCTYPE html>
+	<html lang="en" class="scroll-smooth">
+		<head>
+			<meta charset="utf-8"/>
+			<meta name="viewport" content="width=device-width, initial-scale=1"/>
+			<meta name="description" content={ o.Name + ", backend and systems engineer." }/>
+			<title>{ pageTitle(o, section) }</title>
+			<script>
+				(function () {
+					const t = localStorage.theme;
+					if (t === "dark" || (!t && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+						document.documentElement.classList.add("dark");
+					}
+				})();
+			</script>
+			<link rel="preconnect" href="https://fonts.googleapis.com"/>
+			<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+			<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+			<link rel="stylesheet" href="/static/css/styles.css"/>
+			<script defer src="/static/js/htmx.min.js"></script>
+			<script defer src="/static/js/app.js"></script>
+		</head>
+		<body class="flex min-h-svh flex-col bg-surface font-sans text-ink antialiased">
+			<div aria-hidden="true" class="dot-grid pointer-events-none fixed inset-0 -z-10"></div>
+			@siteHeader(o, current)
+			<div id="toast-region" aria-live="polite" class="pointer-events-none fixed right-4 top-[calc(var(--spacing-nav)+1rem)] z-50 flex w-full max-w-xs flex-col gap-2"></div>
+			<main class="flex-1">
+				{ children... }
+			</main>
+			@siteFooter(o)
+		</body>
+	</html>
+}
+
+// pageTitle composes the document title from a section name and the site name.
+func pageTitle(o content.Owner, section string) string {
+	if section == "" {
+		return o.Name
+	}
+	return section + " · " + o.Name
+}
+
+// nameParts splits a name into its first word and the remainder.
+func nameParts(name string) (string, string) {
+	first, rest, _ := strings.Cut(name, " ")
+	return first, rest
+}
+
+// wordmark renders the owner name with the surname accented.
+templ wordmark(o content.Owner) {
+	{{ first, rest := nameParts(o.Name) }}
+	if rest == "" {
+		{ first }
+	} else {
+		{ first + " " }<span class="text-signal">{ rest }</span>
+	}
+}
+
+// eyebrow is the small pulsing dot label that opens each page.
+templ eyebrow(text string) {
+	<p class="flex items-center gap-2.5 font-mono text-xs uppercase tracking-eyebrow text-muted">
+		<span class="inline-block size-1.5 animate-pulse rounded-full bg-signal motion-reduce:animate-none"></span>
+		{ text }
+	</p>
+}
+
+// pageShell is the shared section that wraps each inner page. Pass fill=true on
+// pages with one section so it spans the viewport and keeps the footer below the
+// fold. Pass false when more sections follow.
+templ pageShell(fill bool) {
+	<section
+		class={
+			"mx-auto max-w-6xl px-6 pt-12 pb-24 sm:pt-14 sm:pb-32",
+			templ.KV("min-h-[calc(100svh-var(--spacing-nav))]", fill),
+		}
+	>
+		{ children... }
+	</section>
+}
+
+templ siteHeader(o content.Owner, current string) {
+	<header class="sticky top-0 z-20 border-b border-line bg-surface/80 backdrop-blur-sm">
+		<div class="mx-auto flex h-nav max-w-6xl items-center justify-between px-6">
+			<a href="/" class="font-mono text-xl font-bold tracking-tight text-ink">
+				@wordmark(o)
+			</a>
+			<div class="flex items-center gap-4 sm:gap-6">
+				<nav class="hidden items-center gap-8 font-mono text-base sm:flex">
+					@navItem("/", "Home", "home", current)
+					@navItem("/projects", "Projects", "projects", current)
+					@navItem("/about", "About", "about", current)
+					@navItem("/contact", "Contact", "contact", current)
+				</nav>
+				@themeToggle()
+				<button
+					id="nav-toggle"
+					type="button"
+					aria-label="Toggle menu"
+					aria-controls="mobile-menu"
+					aria-expanded="false"
+					class="cursor-pointer rounded-md border border-line p-1.5 text-muted transition-colors hover:border-ink hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal sm:hidden"
+				>
+					<svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+						<line x1="4" x2="20" y1="6" y2="6"></line>
+						<line x1="4" x2="20" y1="12" y2="12"></line>
+						<line x1="4" x2="20" y1="18" y2="18"></line>
+					</svg>
+				</button>
+			</div>
+		</div>
+		<nav id="mobile-menu" class="hidden border-t border-line bg-surface px-6 py-4 font-mono text-base sm:hidden">
+			<div class="flex flex-col gap-3">
+				@navItem("/", "Home", "home", current)
+				@navItem("/projects", "Projects", "projects", current)
+				@navItem("/about", "About", "about", current)
+				@navItem("/contact", "Contact", "contact", current)
+			</div>
+		</nav>
+	</header>
+}
+
+templ navItem(href, label, key, current string) {
+	<a
+		href={ templ.URL(href) }
+		class={
+			"transition-colors",
+			templ.KV("text-signal underline underline-offset-8 decoration-2", key == current),
+			templ.KV("text-muted hover:text-ink", key != current),
+		}
+	>
+		{ label }
+	</a>
+}
+
+templ themeToggle() {
+	<button
+		id="theme-toggle"
+		type="button"
+		aria-label="Toggle color theme"
+		class="cursor-pointer rounded-md border border-line p-1.5 text-muted transition-colors hover:border-ink hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal"
+	>
+		<svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+			<circle cx="12" cy="12" r="9"></circle>
+			<path d="M12 3a9 9 0 000 18z" fill="currentColor" stroke="none"></path>
+		</svg>
+	</button>
+}
+
+templ siteFooter(o content.Owner) {
+	<footer class="border-t border-footer-line bg-footer text-footer-fg">
+		<div class="mx-auto max-w-6xl px-6 py-16">
+			<div class="flex flex-col justify-between gap-10 sm:flex-row">
+				<div class="max-w-sm">
+					<p class="font-mono text-lg font-bold text-footer-heading">
+						@wordmark(o)
+					</p>
+					<p class="mt-4 text-base leading-relaxed">Backend and systems engineer. Building things from the socket up.</p>
+					<div class="mt-5 flex gap-4">
+						<a href={ templ.URL(o.GitHubURL()) } target="_blank" rel="noopener noreferrer" aria-label="GitHub" class="text-footer-fg transition-colors hover:text-signal">
+							@contactIcon("GitHub")
+						</a>
+						<a href={ templ.URL(o.MailtoURL()) } aria-label="Email" class="text-footer-fg transition-colors hover:text-signal">
+							@contactIcon("Email")
+						</a>
+					</div>
+				</div>
+				<div>
+					<p class="font-mono text-xs uppercase tracking-label text-footer-heading">Quick links</p>
+					<ul class="mt-5 space-y-3 font-mono text-base">
+						<li><a href="/" class="transition-colors hover:text-footer-heading">Home</a></li>
+						<li><a href="/projects" class="transition-colors hover:text-footer-heading">Projects</a></li>
+						<li><a href="/about" class="transition-colors hover:text-footer-heading">About</a></li>
+						<li><a href="/contact" class="transition-colors hover:text-footer-heading">Contact</a></li>
+					</ul>
+				</div>
+			</div>
+			<p class="mt-12 border-t border-footer-line pt-6 font-mono text-sm">© 2026 { o.Name }</p>
+		</div>
+	</footer>
+}

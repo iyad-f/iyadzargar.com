@@ -1,0 +1,11 @@
+# SPDX-FileCopyrightText: 2026 Iyad
+# SPDX-License-Identifier: Apache-2.0
+
+# Local dev overrides
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"

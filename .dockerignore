@@ -1,0 +1,10 @@
+# SPDX-FileCopyrightText: 2026 Iyad
+# SPDX-License-Identifier: Apache-2.0
+
+# Using the whitelist pattern here.
+*
+!cmd
+!internal
+!web
+!go.mod
+!go.sum
