@@ -1,0 +1,7 @@
+# Using the whitelist pattern here.
+*
+!cmd
+!internal
+!web
+!go.mod
+!go.sum

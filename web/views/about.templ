@@ -1,0 +1,108 @@
+// SPDX-FileCopyrightText: 2026 Iyad
+// SPDX-License-Identifier: Apache-2.0
+
+package views
+
+import "github.com/iyad-f/iyadf.com/internal/content"
+
+// skillPill returns the pill color classes for a skill.
+func skillPill(name string) string {
+	lang := content.Language(name)
+	switch lang {
+	case content.Go, content.Rust, content.Python, content.JavaScript:
+		return styleFor(lang).tag
+	default:
+		return "border-line text-ink/80"
+	}
+}
+
+templ About(site content.Site) {
+	@Base(site.Owner, "About", "about") {
+		@aboutHero(site.About)
+		@aboutSkills(site.About)
+	}
+}
+
+templ aboutHero(about content.About) {
+	@pageShell(false) {
+		<div class="grid items-center gap-12 lg:grid-cols-2">
+			<div>
+				@eyebrow("A decade in, still curious")
+				<h1 class="mt-6 max-w-xl font-mono text-4xl font-bold leading-tight tracking-tight text-ink sm:text-5xl">
+					In love with computer science, <span class="text-signal">all the way down</span>.
+				</h1>
+				<div class="mt-8 max-w-xl space-y-5 text-lg leading-relaxed text-ink/80">
+					for _, para := range about.Bio {
+						<p>{ para }</p>
+					}
+				</div>
+				<figure class="mt-8 max-w-xl border-l-2 border-signal pl-5">
+					<blockquote class="font-mono text-lg leading-relaxed text-ink/90">
+						&ldquo;Computer science is no more about computers than astronomy is about telescopes.&rdquo;
+					</blockquote>
+					<figcaption class="mt-3 font-mono text-xs uppercase tracking-eyebrow text-signal">
+						Edsger W. Dijkstra
+					</figcaption>
+				</figure>
+			</div>
+			<div class="mt-4 lg:mt-0">
+				@layerStack()
+			</div>
+		</div>
+	}
+}
+
+templ aboutSkills(about content.About) {
+	<section>
+		<div class="mx-auto max-w-6xl px-6 py-24 sm:py-32">
+			<h2 class="font-mono text-3xl font-bold tracking-tight text-ink sm:text-4xl">Skills &amp; expertise</h2>
+			<div class="mt-10 divide-y divide-line">
+				for _, group := range about.SkillGroups {
+					<div class="grid gap-3 py-5 sm:grid-cols-[11rem_1fr] sm:gap-8">
+						<p class="flex items-center gap-2 font-mono text-xs uppercase tracking-label text-signal sm:pt-1.5">
+							@categoryIcon(group.Category)
+							{ group.Category }
+						</p>
+						<div class="flex flex-wrap gap-2.5">
+							for _, item := range group.Items {
+								<span class={ "rounded-full border bg-fill px-3.5 py-1.5 font-mono text-sm", skillPill(item) }>{ item }</span>
+							}
+						</div>
+					</div>
+				}
+			</div>
+		</div>
+	</section>
+}
+
+// layerStack is the about page signature, the layers of the stack from the
+// top down, with the lower internals lit in the accent color.
+templ layerStack() {
+	<div class="relative">
+		<div aria-hidden="true" class="pointer-events-none absolute -inset-8 rounded-full bg-term-glow opacity-60 blur-3xl"></div>
+		<div class="relative overflow-hidden rounded-xl border border-line bg-term-bg font-mono shadow-2xl shadow-black/50">
+			<div class="flex items-center gap-2 border-b border-term-line px-5 py-3">
+				<span class="size-3 rounded-full bg-term-danger"></span>
+				<span class="size-3 rounded-full bg-term-warn"></span>
+				<span class="size-3 rounded-full bg-term-ok"></span>
+				<span class="ml-2 text-xs text-term-dim">the stack</span>
+			</div>
+			<div class="divide-y divide-term-line">
+				@layer("distributed systems", "system", "text-term-dim")
+				@layer("scalable backends", "service", "text-term-text")
+				@layer("HTTP and RPC", "protocol", "text-term-text")
+				@layer("TCP and sockets", "transport", "text-term-accent")
+				@layer("syscalls and memory", "kernel", "text-term-accent")
+				@layer("down to the bytes", "metal", "text-term-accent")
+			</div>
+			<div class="border-t border-term-line px-5 py-3 text-xs text-term-dim"># the deeper, the better</div>
+		</div>
+	</div>
+}
+
+templ layer(name, zone, color string) {
+	<div class="flex items-center justify-between gap-4 px-5 py-3 text-sm">
+		<span class={ color }>{ name }</span>
+		<span class="text-[10px] uppercase tracking-wider text-term-dim">{ zone }</span>
+	</div>
+}

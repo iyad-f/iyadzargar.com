@@ -1,0 +1,95 @@
+// SPDX-FileCopyrightText: 2026 Iyad
+// SPDX-License-Identifier: Apache-2.0
+
+package views
+
+import "github.com/iyad-f/iyadf.com/internal/content"
+
+templ Home(site content.Site) {
+	@Base(site.Owner, "", "home") {
+		@hero(site.Owner)
+		@featured(site)
+	}
+}
+
+templ hero(o content.Owner) {
+	<section class="flex min-h-[calc(100svh-var(--spacing-nav))] items-start pt-12 sm:pt-14 lg:items-center lg:pt-0">
+		<div class="mx-auto grid w-full max-w-6xl items-center gap-12 px-6 lg:grid-cols-2">
+			<div>
+				@eyebrow("Backend and systems engineer")
+				<h1 class="mt-6 font-mono text-4xl font-bold tracking-tight text-ink sm:text-5xl lg:text-6xl">
+					<span data-text={ o.Name }>{ o.Name }</span><span class="caret">_</span>
+				</h1>
+				<p class="mt-6 max-w-lg text-lg leading-relaxed text-ink/80">
+					For the love of computer science, from raw sockets to distributed systems.
+				</p>
+				<div class="mt-10 flex flex-wrap gap-3">
+					@button(btnPrimary, "/projects") {
+						View projects
+						<svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+							<path d="M5 12h14"></path>
+							<path d="m12 5 7 7-7 7"></path>
+						</svg>
+					}
+					@button(btnGhost, "/contact") {
+						Get in touch
+					}
+				</div>
+			</div>
+			<div class="mt-4 lg:mt-0">
+				@terminalCard()
+			</div>
+		</div>
+	</section>
+}
+
+templ terminalCard() {
+	<div class="relative">
+		<div aria-hidden="true" class="pointer-events-none absolute -inset-8 rounded-full bg-term-glow opacity-60 blur-3xl"></div>
+		<div class="relative overflow-hidden rounded-xl border border-line bg-term-bg shadow-2xl shadow-black/50">
+			<div class="flex items-center gap-2 border-b border-term-line px-4 py-3">
+				<span class="size-3 rounded-full bg-term-danger"></span>
+				<span class="size-3 rounded-full bg-term-warn"></span>
+				<span class="size-3 rounded-full bg-term-ok"></span>
+				<span class="ml-2 font-mono text-xs text-term-dim">iyadf.com - zsh</span>
+				<button
+					id="term-toggle"
+					type="button"
+					class="ml-auto flex cursor-pointer items-center gap-1.5 rounded border border-term-line px-2 py-1 font-mono text-[11px] leading-none text-term-text transition-colors hover:border-term-dim hover:text-term-fg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal"
+				>
+					<span id="term-dot" class="relative top-px size-1.5 rounded-full bg-term-ok"></span>
+					<span id="term-label">stop</span>
+				</button>
+			</div>
+			<div id="term" class="term-scroll h-96 overflow-y-auto px-5 py-4 font-mono text-xs leading-6 text-term-text"></div>
+		</div>
+	</div>
+}
+
+templ featured(site content.Site) {
+	<section>
+		<div class="mx-auto max-w-6xl px-6 py-24 sm:py-32">
+			<div class="flex items-end justify-between gap-6">
+				<div>
+					<h2 class="font-mono text-3xl font-bold tracking-tight text-ink sm:text-4xl">
+						Featured work
+					</h2>
+					<p class="mt-4 max-w-xl text-xl leading-relaxed text-ink/80">
+						A glimpse into my latest projects and explorations.
+					</p>
+				</div>
+				<a href="/projects" class="hidden shrink-0 font-mono text-sm text-signal transition-opacity hover:opacity-80 sm:inline">
+					All projects →
+				</a>
+			</div>
+			<div class="mt-12 grid gap-6 sm:grid-cols-2">
+				for _, p := range site.Featured() {
+					@projectCard(p)
+				}
+			</div>
+			<a href="/projects" class="mt-8 inline-block font-mono text-sm text-signal transition-opacity hover:opacity-80 sm:hidden">
+				All projects →
+			</a>
+		</div>
+	</section>
+}

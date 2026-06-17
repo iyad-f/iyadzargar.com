@@ -1,0 +1,335 @@
+// SPDX-FileCopyrightText: 2026 Iyad
+// SPDX-License-Identifier: Apache-2.0
+
+package views
+
+import (
+	"strconv"
+	"strings"
+
+	"github.com/iyad-f/iyadf.com/internal/content"
+)
+
+// Kind is a banner or toast severity.
+type Kind string
+
+// Banner and toast severities.
+const (
+	KindOK    Kind = "ok"
+	KindWarn  Kind = "warn"
+	KindError Kind = "error"
+)
+
+// Notice is a status message shown to a visitor after a contact attempt. It is
+// rendered as an inline banner without JS, or as a toast with it. An empty Kind
+// renders nothing.
+type Notice struct {
+	Kind Kind
+	Text string
+}
+
+// bannerClass returns the inline banner color classes for a kind.
+func bannerClass(kind Kind) string {
+	switch kind {
+	case KindOK:
+		return "border-term-ok/40 bg-term-ok/10 text-term-ok"
+	case KindWarn:
+		return "border-term-warn/40 bg-term-warn/10 text-term-warn"
+	default:
+		return "border-term-danger/40 bg-term-danger/10 text-term-danger"
+	}
+}
+
+// Messages shown to a visitor after a contact attempt.
+const (
+	msgSent    = "Thanks, your message is on its way. I'll get back to you soon."
+	msgInvalid = "Please check the form and try again."
+	msgRate    = "You've sent a few messages already. Please try again in a little while."
+	msgError   = "Something went wrong sending that. You can also email me directly."
+)
+
+// StatusNotice maps a contact status to its notice. An unknown status yields a
+// zero Notice, which renders nothing.
+func StatusNotice(status string) Notice {
+	switch status {
+	case "sent":
+		return Notice{Kind: KindOK, Text: msgSent}
+	case "ratelimited":
+		return Notice{Kind: KindWarn, Text: msgRate}
+	case "invalid":
+		return Notice{Kind: KindError, Text: msgInvalid}
+	case "error":
+		return Notice{Kind: KindError, Text: msgError}
+	default:
+		return Notice{}
+	}
+}
+
+// toastBorder returns the toast's left-accent color for a kind.
+func toastBorder(kind Kind) string {
+	switch kind {
+	case KindOK:
+		return "border-l-term-ok"
+	case KindWarn:
+		return "border-l-term-warn"
+	default:
+		return "border-l-term-danger"
+	}
+}
+
+// toastColor returns the toast icon color for a kind.
+func toastColor(kind Kind) string {
+	switch kind {
+	case KindOK:
+		return "text-term-ok"
+	case KindWarn:
+		return "text-term-warn"
+	default:
+		return "text-term-danger"
+	}
+}
+
+// Toast renders a status notice and prepends it into the toast region as an
+// out-of-band swap. It starts hidden so app.js can animate it in.
+templ Toast(status string) {
+	{{ n := StatusNotice(status) }}
+	<div id="toast-region" hx-swap-oob="afterbegin">
+		<div
+			data-kind={ string(n.Kind) }
+			role="status"
+			class={ "pointer-events-auto flex translate-x-4 items-start gap-3 rounded-md border border-line border-l-4 bg-surface px-4 py-3 font-mono text-sm opacity-0 shadow-lg shadow-black/20 transition duration-300 motion-reduce:transition-none", toastBorder(n.Kind) }
+		>
+			<span class={ "mt-0.5 shrink-0", toastColor(n.Kind) }>
+				@toastIcon(n.Kind)
+			</span>
+			<span class="flex-1 text-ink">{ n.Text }</span>
+			<button type="button" aria-label="Dismiss" data-toast-close class="shrink-0 cursor-pointer text-muted transition-colors hover:text-ink">
+				<svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+					<path d="M18 6 6 18"></path>
+					<path d="m6 6 12 12"></path>
+				</svg>
+			</button>
+		</div>
+	</div>
+}
+
+// toastIcon renders the status icon for a toast kind.
+templ toastIcon(kind Kind) {
+	switch kind {
+		case KindOK:
+			<svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+				<circle cx="12" cy="12" r="10"></circle>
+				<path d="m9 12 2 2 4-4"></path>
+			</svg>
+		case KindWarn:
+			<svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+				<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"></path>
+				<path d="M12 9v4"></path>
+				<path d="M12 17h.01"></path>
+			</svg>
+		default:
+			<svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+				<circle cx="12" cy="12" r="10"></circle>
+				<path d="m15 9-6 6"></path>
+				<path d="m9 9 6 6"></path>
+			</svg>
+	}
+}
+
+// btnVariant selects a button's visual style.
+type btnVariant int
+
+const (
+	btnPrimary btnVariant = iota // filled accent
+	btnGhost                     // outlined
+)
+
+// btnClass returns the Tailwind classes for a button variant.
+func btnClass(v btnVariant) string {
+	base := "inline-flex cursor-pointer items-center justify-center gap-2 rounded-md px-5 py-2.5 font-mono text-sm font-medium transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal disabled:cursor-not-allowed disabled:opacity-60"
+	if v == btnGhost {
+		return base + " border border-line text-ink hover:border-ink"
+	}
+	return base + " bg-signal text-surface hover:opacity-90"
+}
+
+// button renders its children as a link when href is set, or a submit button otherwise.
+templ button(v btnVariant, href string) {
+	if href != "" {
+		<a href={ templ.URL(href) } class={ btnClass(v) }>
+			{ children... }
+		</a>
+	} else {
+		<button type="submit" class={ btnClass(v) }>
+			{ children... }
+		</button>
+	}
+}
+
+// langStyle holds the color classes that distinguish a language.
+type langStyle struct {
+	dot    string // language dot background
+	accent string // card top border accent
+	tag    string // language pill border and text
+}
+
+// styleFor maps a language to its color classes. Unknown languages render neutral.
+func styleFor(l content.Language) langStyle {
+	switch l {
+	case content.Go:
+		return langStyle{dot: "bg-lang-go", accent: "border-t-lang-go", tag: "border-lang-go/40 text-lang-go"}
+	case content.Rust:
+		return langStyle{dot: "bg-lang-rust", accent: "border-t-lang-rust", tag: "border-lang-rust/40 text-lang-rust"}
+	case content.Python:
+		return langStyle{dot: "bg-lang-python", accent: "border-t-lang-python", tag: "border-lang-python/40 text-lang-python"}
+	case content.JavaScript:
+		return langStyle{dot: "bg-lang-js", accent: "border-t-lang-js", tag: "border-lang-js/40 text-lang-js"}
+	default:
+		return langStyle{dot: "bg-muted", accent: "border-t-signal", tag: "border-line text-muted"}
+	}
+}
+
+templ projectCard(p content.Project) {
+	<article
+		data-tags={ strings.ToLower(string(p.Lang) + " " + strings.Join(p.Tags, " ")) }
+		class={
+			"group relative flex flex-col rounded-xl border border-line border-t-2 bg-fill p-8 transition duration-300 hover:-translate-y-1 hover:bg-fill-strong hover:shadow-2xl hover:shadow-signal/10",
+			styleFor(p.Lang).accent,
+		}
+	>
+		<h3 class="flex items-center gap-2.5 font-mono text-xl font-bold text-ink">
+			@langDot(p.Lang)
+			{ p.Name }
+		</h3>
+		<p class="mt-4 flex-1 leading-relaxed text-muted">{ p.Desc }</p>
+		<div class="mt-6 flex flex-wrap gap-2">
+			@tag(string(p.Lang))
+			for _, t := range p.Tags {
+				@tag(t)
+			}
+		</div>
+		<span class="mt-6 inline-flex items-center gap-2 font-mono text-sm font-medium text-signal">
+			{ p.LinkLabel }
+			<svg aria-hidden="true" class="size-4 transition-transform duration-300 group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+				<path d="M5 12h14"></path>
+				<path d="m12 5 7 7-7 7"></path>
+			</svg>
+		</span>
+		<a
+			href={ templ.URL(p.URL) }
+			target="_blank"
+			rel="noopener noreferrer"
+			class="absolute inset-0 rounded-xl focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal"
+			aria-label={ p.Name + " - " + p.LinkLabel }
+		></a>
+	</article>
+}
+
+// langDot is a small color marker for a project's language.
+templ langDot(l content.Language) {
+	<span class={ "size-2 shrink-0 rounded-full", styleFor(l).dot }></span>
+}
+
+// tag renders a tech pill. A known language takes its brand color, a tool stays neutral.
+templ tag(t string) {
+	<span class={ "rounded-full border px-2.5 py-1 font-mono text-xs", styleFor(content.Language(t)).tag }>{ t }</span>
+}
+
+templ filterPill(filter, label string, active bool) {
+	<button
+		type="button"
+		data-filter={ filter }
+		data-active={ strconv.FormatBool(active) }
+		class="cursor-pointer rounded-full border border-line px-3 py-1 font-mono uppercase tracking-wider text-muted transition-colors hover:text-ink data-[active=true]:border-signal data-[active=true]:bg-signal data-[active=true]:text-surface"
+	>
+		{ label }
+	</button>
+}
+
+templ contactRow(label, value, href string) {
+	if href == "" {
+		<div class="flex items-center gap-4 rounded-lg border border-line bg-fill p-4">
+			@contactRowInner(label, value)
+		</div>
+	} else if strings.HasPrefix(href, "http") {
+		<a href={ templ.URL(href) } target="_blank" rel="noopener noreferrer" class="flex items-center gap-4 rounded-lg border border-line bg-fill p-4 transition-colors hover:border-signal">
+			@contactRowInner(label, value)
+		</a>
+	} else {
+		<a href={ templ.URL(href) } class="flex items-center gap-4 rounded-lg border border-line bg-fill p-4 transition-colors hover:border-signal">
+			@contactRowInner(label, value)
+		</a>
+	}
+}
+
+templ contactRowInner(label, value string) {
+	<span class="flex size-9 shrink-0 items-center justify-center rounded-md bg-signal/10 text-signal">
+		@contactIcon(label)
+	</span>
+	<div class="min-w-0">
+		<p class="font-mono text-xs uppercase tracking-wider text-muted">{ label }</p>
+		<p class="truncate font-mono text-sm text-ink">{ value }</p>
+	</div>
+}
+
+templ contactIcon(label string) {
+	switch label {
+		case "GitHub":
+			<svg class="size-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+				<path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56 0-.28-.01-1.02-.02-2-3.2.7-3.88-1.54-3.88-1.54-.52-1.33-1.28-1.68-1.28-1.68-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.23-1.28-5.23-5.7 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11.1 11.1 0 0 1 5.79 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.43-2.69 5.41-5.25 5.69.41.36.78 1.07.78 2.16 0 1.56-.01 2.82-.01 3.2 0 .31.21.68.8.56C20.71 21.39 24 17.08 24 12 24 5.65 18.85.5 12.5.5h-.5Z"></path>
+			</svg>
+		case "Location":
+			<svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+				<path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path>
+				<circle cx="12" cy="10" r="3"></circle>
+			</svg>
+		default:
+			<svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+				<path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"></path>
+				<rect x="2" y="4" width="20" height="16" rx="2"></rect>
+			</svg>
+	}
+}
+
+// categoryIcon renders a small icon for a skill category.
+templ categoryIcon(category string) {
+	switch category {
+		case "Languages":
+			<svg class="size-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+				<path d="m16 18 6-6-6-6"></path>
+				<path d="m8 6-6 6 6 6"></path>
+			</svg>
+		case "System Design":
+			<svg class="size-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+				<circle cx="18" cy="5" r="3"></circle>
+				<circle cx="6" cy="12" r="3"></circle>
+				<circle cx="18" cy="19" r="3"></circle>
+				<line x1="8.59" x2="15.42" y1="13.51" y2="17.49"></line>
+				<line x1="15.41" x2="8.59" y1="6.51" y2="10.49"></line>
+			</svg>
+		case "Cloud / Infra":
+			<svg class="size-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+				<path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"></path>
+			</svg>
+		case "CI/CD":
+			<svg class="size-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+				<path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path>
+				<path d="M21 3v5h-5"></path>
+				<path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path>
+				<path d="M8 16H3v5"></path>
+			</svg>
+		case "Databases":
+			<svg class="size-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+				<ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
+				<path d="M3 5V19A9 3 0 0 0 21 19V5"></path>
+				<path d="M3 12A9 3 0 0 0 21 12"></path>
+			</svg>
+		default:
+			<svg class="size-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+				<line x1="4" x2="20" y1="9" y2="9"></line>
+				<line x1="4" x2="20" y1="15" y2="15"></line>
+				<line x1="10" x2="8" y1="3" y2="21"></line>
+				<line x1="16" x2="14" y1="3" y2="21"></line>
+			</svg>
+	}
+}

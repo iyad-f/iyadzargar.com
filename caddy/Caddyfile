@@ -1,0 +1,16 @@
+iyadf.com {
+	rate_limit {
+		zone perip {
+			key         {remote_host}
+			events      120
+			window      1m
+			ipv6_prefix 64
+		}
+	}
+
+	reverse_proxy app:8080
+}
+
+www.iyadf.com {
+	redir https://iyadf.com{uri} permanent
+}

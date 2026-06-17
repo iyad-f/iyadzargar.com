@@ -1,0 +1,23 @@
+services:
+  app:
+    image: ghcr.io/iyad-f/iyadf.com:${IMAGE_TAG:-latest}
+    restart: unless-stopped
+    env_file:
+      - .env
+
+  caddy:
+    image: ghcr.io/iyad-f/iyadf.com-caddy:${IMAGE_TAG:-latest}
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - app
+
+volumes:
+  caddy_data:
+  caddy_config:
