@@ -53,7 +53,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: .
           push: true
@@ -62,7 +62,7 @@ jobs:
             ${{ env.IMAGE }}:latest
 
       - name: Build and push custom Caddy
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: ./caddy
           push: true
