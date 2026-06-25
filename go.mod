@@ -7,7 +7,7 @@ require (
 	github.com/caarlos0/env/v11 v11.4.1
 	github.com/go-chi/httprate v0.15.0
 	github.com/go-playground/validator/v10 v10.30.3
-	github.com/pelletier/go-toml/v2 v2.4.0
+	github.com/pelletier/go-toml/v2 v2.4.2
 	github.com/wneessen/go-mail v0.7.3
 )
 
