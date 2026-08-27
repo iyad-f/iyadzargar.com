@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: 2026 Iyad
 # SPDX-License-Identifier: Apache-2.0
 
-FROM golang:1.26-alpine AS build
+FROM golang:1.27-alpine AS build
 WORKDIR /src
 
 COPY go.mod go.sum ./
