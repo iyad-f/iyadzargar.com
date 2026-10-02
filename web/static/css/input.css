@@ -46,6 +46,7 @@
   /* language brand colors */
   --lang-go: #00add8;
   --lang-rust: #ce422b;
+  --lang-zig: #f7a41d;
   --lang-python: #4b8bbe;
   --lang-js: #f0db4f;
 }
@@ -89,6 +90,7 @@
 
   --color-lang-go: var(--lang-go);
   --color-lang-rust: var(--lang-rust);
+  --color-lang-zig: var(--lang-zig);
   --color-lang-python: var(--lang-python);
   --color-lang-js: var(--lang-js);
 

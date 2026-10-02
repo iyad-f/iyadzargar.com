@@ -15,7 +15,7 @@ bio = [
 
 [[about.skills]]
 category = "Languages"
-items = ["Go", "Python", "Rust", "JavaScript"]
+items = ["Go", "Python", "Rust", "Zig", "JavaScript"]
 
 [[about.skills]]
 category = "System Design"
@@ -34,6 +34,15 @@ category = "Databases"
 items = ["PostgreSQL", "MySQL", "SQLite", "Cassandra", "ScyllaDB", "Redis", "Valkey", "MongoDB"]
 
 [[projects]]
+name = "brainfuck.zig"
+desc = "Brainfuck JIT compiler that emits raw AArch64 machine code into MAP_JIT pages. An IR with a run folding pass takes mandelbrot.bf from 9.2s on the tree walking interpreter to 0.56s, about 16x faster."
+lang = "Zig"
+tags = ["JIT", "AArch64", "Machine code", "IR", "Optimization passes"]
+url = "https://github.com/iyad-f/brainfuck.zig"
+link_label = "Source"
+featured = true
+
+[[projects]]
 name = "rkv"
 desc = "Redis compatible in memory store speaking RESP2 over a single threaded epoll/kqueue reactor via raw libc FFI. No Tokio. Runs unmodified against redis-cli and redis-benchmark."
 lang = "Rust"
@@ -49,7 +58,7 @@ lang = "Go"
 tags = ["TCP", "HTTP/1.1", "TLS"]
 url = "https://github.com/iyad-f/bolt"
 link_label = "Source"
-featured = true
+featured = false
 
 [[projects]]
 name = "sonyflake"

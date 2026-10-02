@@ -18,7 +18,7 @@ import "github.com/iyad-f/iyadzargar.com/internal/content"
 func skillPill(name string) string {
 	lang := content.Language(name)
 	switch lang {
-	case content.Go, content.Rust, content.Python, content.JavaScript:
+	case content.Go, content.Rust, content.Zig, content.Python, content.JavaScript:
 		return styleFor(lang).tag
 	default:
 		return "border-line text-ink/80"

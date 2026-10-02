@@ -20,6 +20,7 @@ type Language string
 const (
 	Go         Language = "Go"
 	Rust       Language = "Rust"
+	Zig        Language = "Zig"
 	Python     Language = "Python"
 	JavaScript Language = "JavaScript"
 )
