@@ -221,7 +221,7 @@
 			}
 
 			const out = row.lastChild;
-			const command = "./iyadf.com";
+			const command = "./iyadzargar.com";
 
 			if (reduce) {
 				out.textContent = command;

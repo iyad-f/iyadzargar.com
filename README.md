@@ -3,9 +3,9 @@ SPDX-FileCopyrightText: 2026 Iyad
 SPDX-License-Identifier: Apache-2.0
 -->
 
-# iyadf.com
+# iyadzargar.com
 
-My personal website [iyadf.com](https://iyadf.com).
+My personal website [iyadzargar.com](https://iyadzargar.com).
 
 ## Development
 

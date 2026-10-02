@@ -12,8 +12,8 @@ import (
 
 	"github.com/go-chi/httprate"
 
-	"github.com/iyad-f/iyadf.com/internal/mailer"
-	"github.com/iyad-f/iyadf.com/web/views"
+	"github.com/iyad-f/iyadzargar.com/internal/mailer"
+	"github.com/iyad-f/iyadzargar.com/web/views"
 )
 
 // contactForm is a submission to validate before it is sent as mail.
@@ -74,9 +74,9 @@ func (h *Handler) contactSubmit(w http.ResponseWriter, r *http.Request) {
 
 	msg := mailer.Message{
 		ReplyTo: form.Email,
-		Subject: "[iyadf.com] " + form.Subject,
+		Subject: "[iyadzargar.com] " + form.Subject,
 		Body: fmt.Sprintf(
-			"New message from the iyadf.com contact form.\n\nName     %s\nEmail    %s\n\n%s\n",
+			"New message from the iyadzargar.com contact form.\n\nName     %s\nEmail    %s\n\n%s\n",
 			form.Name, form.Email, form.Message,
 		),
 	}

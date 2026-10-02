@@ -13,11 +13,11 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/iyad-f/iyadf.com/internal/config"
-	"github.com/iyad-f/iyadf.com/internal/content"
-	"github.com/iyad-f/iyadf.com/internal/handler"
-	"github.com/iyad-f/iyadf.com/internal/mailer"
-	"github.com/iyad-f/iyadf.com/web"
+	"github.com/iyad-f/iyadzargar.com/internal/config"
+	"github.com/iyad-f/iyadzargar.com/internal/content"
+	"github.com/iyad-f/iyadzargar.com/internal/handler"
+	"github.com/iyad-f/iyadzargar.com/internal/mailer"
+	"github.com/iyad-f/iyadzargar.com/web"
 )
 
 // Server is the application's HTTP server.

@@ -1,17 +1,17 @@
 // SPDX-FileCopyrightText: 2026 Iyad
 // SPDX-License-Identifier: Apache-2.0
 
-// Package main runs the iyadf.com web server.
+// Package main runs the iyadzargar.com web server.
 package main
 
 import (
 	"log/slog"
 	"os"
 
-	"github.com/iyad-f/iyadf.com/internal/config"
-	"github.com/iyad-f/iyadf.com/internal/content"
-	"github.com/iyad-f/iyadf.com/internal/mailer"
-	"github.com/iyad-f/iyadf.com/internal/server"
+	"github.com/iyad-f/iyadzargar.com/internal/config"
+	"github.com/iyad-f/iyadzargar.com/internal/content"
+	"github.com/iyad-f/iyadzargar.com/internal/mailer"
+	"github.com/iyad-f/iyadzargar.com/internal/server"
 )
 
 func main() {

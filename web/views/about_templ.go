@@ -12,7 +12,7 @@ package views
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
-import "github.com/iyad-f/iyadf.com/internal/content"
+import "github.com/iyad-f/iyadzargar.com/internal/content"
 
 // skillPill returns the pill color classes for a skill.
 func skillPill(name string) string {

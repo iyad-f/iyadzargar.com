@@ -12,7 +12,7 @@ package views
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
-import "github.com/iyad-f/iyadf.com/internal/content"
+import "github.com/iyad-f/iyadzargar.com/internal/content"
 
 func Home(site content.Site) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
@@ -209,7 +209,7 @@ func terminalCard() templ.Component {
 			templ_7745c5c3_Var8 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, "<div class=\"relative\"><div aria-hidden=\"true\" class=\"pointer-events-none absolute -inset-8 rounded-full bg-term-glow opacity-60 blur-3xl\"></div><div class=\"relative overflow-hidden rounded-xl border border-line bg-term-bg shadow-2xl shadow-black/50\"><div class=\"flex items-center gap-2 border-b border-term-line px-4 py-3\"><span class=\"size-3 rounded-full bg-term-danger\"></span> <span class=\"size-3 rounded-full bg-term-warn\"></span> <span class=\"size-3 rounded-full bg-term-ok\"></span> <span class=\"ml-2 font-mono text-xs text-term-dim\">iyadf.com - zsh</span> <button id=\"term-toggle\" type=\"button\" class=\"ml-auto flex cursor-pointer items-center gap-1.5 rounded border border-term-line px-2 py-1 font-mono text-[11px] leading-none text-term-text transition-colors hover:border-term-dim hover:text-term-fg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal\"><span id=\"term-dot\" class=\"relative top-px size-1.5 rounded-full bg-term-ok\"></span> <span id=\"term-label\">stop</span></button></div><div id=\"term\" class=\"term-scroll h-96 overflow-y-auto px-5 py-4 font-mono text-xs leading-6 text-term-text\"></div></div></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, "<div class=\"relative\"><div aria-hidden=\"true\" class=\"pointer-events-none absolute -inset-8 rounded-full bg-term-glow opacity-60 blur-3xl\"></div><div class=\"relative overflow-hidden rounded-xl border border-line bg-term-bg shadow-2xl shadow-black/50\"><div class=\"flex items-center gap-2 border-b border-term-line px-4 py-3\"><span class=\"size-3 rounded-full bg-term-danger\"></span> <span class=\"size-3 rounded-full bg-term-warn\"></span> <span class=\"size-3 rounded-full bg-term-ok\"></span> <span class=\"ml-2 font-mono text-xs text-term-dim\">iyadzargar.com - zsh</span> <button id=\"term-toggle\" type=\"button\" class=\"ml-auto flex cursor-pointer items-center gap-1.5 rounded border border-term-line px-2 py-1 font-mono text-[11px] leading-none text-term-text transition-colors hover:border-term-dim hover:text-term-fg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal\"><span id=\"term-dot\" class=\"relative top-px size-1.5 rounded-full bg-term-ok\"></span> <span id=\"term-label\">stop</span></button></div><div id=\"term\" class=\"term-scroll h-96 overflow-y-auto px-5 py-4 font-mono text-xs leading-6 text-term-text\"></div></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

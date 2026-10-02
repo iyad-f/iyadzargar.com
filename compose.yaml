@@ -3,13 +3,13 @@
 
 services:
   app:
-    image: ghcr.io/iyad-f/iyadf.com:${IMAGE_TAG:-latest}
+    image: ghcr.io/iyad-f/iyadzargar.com:${IMAGE_TAG:-latest}
     restart: unless-stopped
     env_file:
       - .env
 
   caddy:
-    image: ghcr.io/iyad-f/iyadf.com-caddy:${IMAGE_TAG:-latest}
+    image: ghcr.io/iyad-f/iyadzargar.com-caddy:${IMAGE_TAG:-latest}
     restart: unless-stopped
     ports:
       - "80:80"

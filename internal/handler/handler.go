@@ -8,8 +8,8 @@ import (
 
 	"github.com/go-playground/validator/v10"
 
-	"github.com/iyad-f/iyadf.com/internal/content"
-	"github.com/iyad-f/iyadf.com/internal/mailer"
+	"github.com/iyad-f/iyadzargar.com/internal/content"
+	"github.com/iyad-f/iyadzargar.com/internal/mailer"
 )
 
 // Handler holds the dependencies shared by the site's routes.

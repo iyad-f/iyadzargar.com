@@ -2,8 +2,8 @@
 # SPDX-License-Identifier: Apache-2.0
 
 [owner]
-name = "Iyad Farooq"
-email = "iyad@iyadf.com"
+name = "Iyad Zargar"
+email = "hello@iyadzargar.com"
 github_username = "iyad-f"
 location = "Bengaluru, India"
 
@@ -79,10 +79,10 @@ link_label = "Source"
 featured = false
 
 [[projects]]
-name = "iyadf.com"
+name = "iyadzargar.com"
 desc = "The very site you are reading."
 lang = "Go"
 tags = ["templ", "htmx", "Tailwind", "Caddy", "Distroless"]
-url = "https://github.com/iyad-f/iyadf.com"
+url = "https://github.com/iyad-f/iyadzargar.com"
 link_label = "Source"
 featured = false

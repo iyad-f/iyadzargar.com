@@ -13,7 +13,7 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  IMAGE: ghcr.io/iyad-f/iyadf.com
+  IMAGE: ghcr.io/iyad-f/iyadzargar.com
   TAILWIND_VERSION: v4.3.1
 
 jobs:
@@ -83,7 +83,7 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           source: "compose.yaml,caddy/Caddyfile"
-          target: /srv/iyadf.com
+          target: /srv/iyadzargar.com
 
       - name: Deploy over SSH
         uses: appleboy/ssh-action@v1
@@ -103,7 +103,7 @@ jobs:
           envs: IMAGE_TAG,HOST,PORT,SMTP_HOST,SMTP_PORT,SMTP_USER,CONTACT_TO,SMTP_PASS
           script: |
             set -e
-            cd /srv/iyadf.com
+            cd /srv/iyadzargar.com
             umask 077
             cat > .env <<EOF
             HOST=${HOST}
