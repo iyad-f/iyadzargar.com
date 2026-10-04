@@ -13,8 +13,14 @@ import (
 
 // Config is the application configuration.
 type Config struct {
-	Server Server
-	SMTP   SMTP
+	Server  Server
+	SMTP    SMTP
+	Content Content
+}
+
+// Content holds site content configuration.
+type Content struct {
+	ShowDrafts bool `env:"SHOW_DRAFTS"`
 }
 
 // SMTP holds outbound mail configuration.

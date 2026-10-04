@@ -6,6 +6,7 @@ package content
 import (
 	_ "embed"
 	"fmt"
+	"slices"
 
 	"github.com/pelletier/go-toml/v2"
 )
@@ -39,6 +40,7 @@ type Project struct {
 // Owner is the site owner's identity and contact details.
 type Owner struct {
 	Name           string `toml:"name"`
+	URL            string `toml:"url"`
 	Email          string `toml:"email"`
 	GitHubUsername string `toml:"github_username"`
 	Location       string `toml:"location"`
@@ -70,6 +72,7 @@ type Site struct {
 	Owner    Owner     `toml:"owner"`
 	About    About     `toml:"about"`
 	Projects []Project `toml:"projects"`
+	Posts    []Post    `toml:"-"`
 }
 
 // Featured returns the projects marked as featured.
@@ -83,11 +86,26 @@ func (s Site) Featured() []Project {
 	return out
 }
 
-// Load parses the embedded site content.
-func Load() (Site, error) {
+// Post returns the post with the given slug.
+func (s Site) Post(slug string) (Post, bool) {
+	i := slices.IndexFunc(s.Posts, func(p Post) bool { return p.Slug == slug })
+	if i < 0 {
+		return Post{}, false
+	}
+	return s.Posts[i], true
+}
+
+// Load parses the embedded site content and posts. Draft posts are kept only
+// when drafts is set.
+func Load(drafts bool) (Site, error) {
 	var s Site
 	if err := toml.Unmarshal(raw, &s); err != nil {
 		return Site{}, fmt.Errorf("parse site.toml: %w", err)
 	}
+	posts, err := loadPosts(drafts)
+	if err != nil {
+		return Site{}, fmt.Errorf("load posts: %w", err)
+	}
+	s.Posts = posts
 	return s, nil
 }

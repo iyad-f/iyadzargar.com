@@ -4,11 +4,14 @@ go 1.26.2
 
 require (
 	github.com/a-h/templ v0.3.1020
+	github.com/alecthomas/chroma/v2 v2.20.0
 	github.com/caarlos0/env/v11 v11.4.1
 	github.com/go-chi/httprate v0.15.0
 	github.com/go-playground/validator/v10 v10.30.3
 	github.com/pelletier/go-toml/v2 v2.4.0
 	github.com/wneessen/go-mail v0.7.3
+	github.com/yuin/goldmark v1.8.6
+	github.com/yuin/goldmark-highlighting/v2 v2.0.0-20230729083705-37449abec8cc
 )
 
 require (
@@ -20,6 +23,7 @@ require (
 	github.com/bep/golibsass v1.2.0 // indirect
 	github.com/cenkalti/backoff/v4 v4.3.0 // indirect
 	github.com/cli/browser v1.3.0 // indirect
+	github.com/dlclark/regexp2 v1.11.5 // indirect
 	github.com/fatih/color v1.18.0 // indirect
 	github.com/fsnotify/fsnotify v1.9.0 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.13 // indirect

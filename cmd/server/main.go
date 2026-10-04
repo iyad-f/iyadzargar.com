@@ -23,7 +23,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	site, err := content.Load()
+	site, err := content.Load(cfg.Content.ShowDrafts)
 	if err != nil {
 		logger.Error("load site", "err", err)
 		os.Exit(1)

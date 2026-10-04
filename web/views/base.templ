@@ -9,14 +9,56 @@ import (
 	"github.com/iyad-f/iyadzargar.com/internal/content"
 )
 
+// page is the metadata that sets one document's head apart.
+type page struct {
+	section     string // title prefix, empty on the home page
+	current     string // nav key to highlight
+	description string // empty falls back to the owner's tagline
+	path        string // canonical path, empty to omit it
+	article     bool   // an article rather than a website for link previews
+}
+
+// desc returns the page's meta description.
+func (p page) desc(o content.Owner) string {
+	if p.description != "" {
+		return p.description
+	}
+	return o.Name + ", backend and systems engineer."
+}
+
+// ogType returns the Open Graph type for link previews.
+func (p page) ogType() string {
+	if p.article {
+		return "article"
+	}
+	return "website"
+}
+
 templ Base(o content.Owner, section, current string) {
+	@layout(o, page{section: section, current: current}) {
+		{ children... }
+	}
+}
+
+templ layout(o content.Owner, p page) {
 	<!DOCTYPE html>
 	<html lang="en" class="scroll-smooth">
 		<head>
 			<meta charset="utf-8"/>
 			<meta name="viewport" content="width=device-width, initial-scale=1"/>
-			<meta name="description" content={ o.Name + ", backend and systems engineer." }/>
-			<title>{ pageTitle(o, section) }</title>
+			<meta name="description" content={ p.desc(o) }/>
+			<meta name="author" content={ o.Name }/>
+			<meta property="og:title" content={ pageTitle(o, p.section) }/>
+			<meta property="og:description" content={ p.desc(o) }/>
+			<meta property="og:type" content={ p.ogType() }/>
+			if p.article {
+				<meta property="article:author" content={ o.URL }/>
+			}
+			if p.path != "" {
+				<link rel="canonical" href={ o.URL + p.path }/>
+				<meta property="og:url" content={ o.URL + p.path }/>
+			}
+			<title>{ pageTitle(o, p.section) }</title>
 			<script>
 				(function () {
 					const t = localStorage.theme;
@@ -34,7 +76,7 @@ templ Base(o content.Owner, section, current string) {
 		</head>
 		<body class="flex min-h-svh flex-col bg-surface font-sans text-ink antialiased">
 			<div aria-hidden="true" class="dot-grid pointer-events-none fixed inset-0 -z-10"></div>
-			@siteHeader(o, current)
+			@siteHeader(o, p.current)
 			<div id="toast-region" aria-live="polite" class="pointer-events-none fixed right-4 top-[calc(var(--spacing-nav)+1rem)] z-50 flex w-full max-w-xs flex-col gap-2"></div>
 			<main class="flex-1">
 				{ children... }
@@ -100,6 +142,7 @@ templ siteHeader(o content.Owner, current string) {
 				<nav class="hidden items-center gap-8 font-mono text-base sm:flex">
 					@navItem("/", "Home", "home", current)
 					@navItem("/projects", "Projects", "projects", current)
+					@navItem("/blog", "Blog", "blog", current)
 					@navItem("/about", "About", "about", current)
 					@navItem("/contact", "Contact", "contact", current)
 				</nav>
@@ -124,6 +167,7 @@ templ siteHeader(o content.Owner, current string) {
 			<div class="flex flex-col gap-3">
 				@navItem("/", "Home", "home", current)
 				@navItem("/projects", "Projects", "projects", current)
+				@navItem("/blog", "Blog", "blog", current)
 				@navItem("/about", "About", "about", current)
 				@navItem("/contact", "Contact", "contact", current)
 			</div>
@@ -181,6 +225,7 @@ templ siteFooter(o content.Owner) {
 					<ul class="mt-5 space-y-3 font-mono text-base">
 						<li><a href="/" class="transition-colors hover:text-footer-heading">Home</a></li>
 						<li><a href="/projects" class="transition-colors hover:text-footer-heading">Projects</a></li>
+						<li><a href="/blog" class="transition-colors hover:text-footer-heading">Blog</a></li>
 						<li><a href="/about" class="transition-colors hover:text-footer-heading">About</a></li>
 						<li><a href="/contact" class="transition-colors hover:text-footer-heading">Contact</a></li>
 					</ul>

@@ -400,6 +400,45 @@
 		});
 	}
 
+	function initCodeCopy() {
+		// The clipboard API only exists on secure origins, so skip the button without it.
+		if (!navigator.clipboard) {
+			return;
+		}
+
+		const copyIcon =
+			'<svg class="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg>';
+		const checkIcon =
+			'<svg class="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg>';
+
+		document.querySelectorAll(".code-block").forEach(function (block) {
+			const head = block.querySelector(".code-head");
+			const code = block.querySelector("pre code");
+			if (!head || !code) {
+				return;
+			}
+
+			const button = document.createElement("button");
+			button.type = "button";
+			button.className = "code-copy";
+			button.innerHTML = copyIcon + "<span>Copy</span>";
+			head.appendChild(button);
+
+			let timer;
+			button.addEventListener("click", function () {
+				navigator.clipboard.writeText(code.textContent.replace(/\n$/, "")).then(function () {
+					button.innerHTML = checkIcon + "<span>Copied</span>";
+					button.dataset.copied = "";
+					clearTimeout(timer);
+					timer = setTimeout(function () {
+						button.innerHTML = copyIcon + "<span>Copy</span>";
+						delete button.dataset.copied;
+					}, 2000);
+				});
+			});
+		});
+	}
+
 	initThemeToggle();
 	initMobileNav();
 	initTypewriter();
@@ -407,4 +446,5 @@
 	initProjectFilter();
 	initContactForm();
 	initToasts();
+	initCodeCopy();
 })();

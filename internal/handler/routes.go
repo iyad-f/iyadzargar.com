@@ -15,6 +15,8 @@ import (
 func (h *Handler) Register(mux *http.ServeMux) {
 	mux.Handle("GET /{$}", templ.Handler(views.Home(h.site)))
 	mux.Handle("GET /projects", templ.Handler(views.Projects(h.site)))
+	mux.Handle("GET /blog", templ.Handler(views.Blog(h.site)))
+	mux.HandleFunc("GET /blog/{slug}", h.blogPost)
 	mux.Handle("GET /about", templ.Handler(views.About(h.site)))
 	mux.HandleFunc("GET /contact", h.contactPage)
 	mux.Handle("POST /contact", h.contactRateLimit(http.HandlerFunc(h.contactSubmit)))
