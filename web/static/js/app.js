@@ -151,11 +151,11 @@
 		const boot = [
 			`level=info msg=${paint('"starting server"', bright)} addr=:8080`,
 			`level=info msg=${paint('"static assets mounted"', bright)} dir=web/static`,
-			`level=info msg=${paint('"routes registered"', bright)} count=4`,
+			`level=info msg=${paint('"routes registered"', bright)} count=5`,
 			`level=info msg=${paint('"listening"', bright)} addr=:8080`,
 		];
 
-		const paths = ["/", "/projects", "/about", "/contact"];
+		const paths = ["/", "/projects", "/blog", "/about", "/contact"];
 
 		function request() {
 			const path = paths[Math.floor(Math.random() * paths.length)];
